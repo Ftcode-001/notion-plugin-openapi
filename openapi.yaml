@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Notion GPT Proxy
-  description: A proxy API that allows ChatGPT to access Notion via a secure integration.
+  description: API for GPT to interact with Notion data via a secure proxy
   version: 1.0.0
 
 servers:
@@ -11,19 +11,25 @@ paths:
   /notion/databases:
     get:
       operationId: listDatabases
-      summary: List Notion databases
+      summary: Search all Notion databases
+      description: Uses the /v1/search endpoint to return databases in the workspace.
       responses:
         '200':
-          description: A list of databases
+          description: A list of Notion databases
           content:
             application/json:
               schema:
                 type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
 
   /notion/databases/{database_id}/query:
     post:
       operationId: queryDatabase
-      summary: Query a specific database
+      summary: Query a Notion database
       parameters:
         - name: database_id
           in: path
@@ -36,6 +42,19 @@ paths:
           application/json:
             schema:
               type: object
+              properties:
+                filter:
+                  type: object
+                sorts:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      property:
+                        type: string
+                      direction:
+                        type: string
+                        enum: [ascending, descending]
       responses:
         '200':
           description: Query results
@@ -43,6 +62,11 @@ paths:
             application/json:
               schema:
                 type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
 
-components: {}
-//Add OpenAPI spec for Notion GPT proxy
+components:
+  schemas: {}
